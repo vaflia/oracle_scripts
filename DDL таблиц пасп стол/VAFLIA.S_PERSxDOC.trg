@@ -1,0 +1,121 @@
+ALTER TABLE VAFLIA.S_PERSXDOC
+ DROP PRIMARY KEY CASCADE;
+
+DROP TABLE VAFLIA.S_PERSXDOC CASCADE CONSTRAINTS;
+
+CREATE TABLE VAFLIA.S_PERSXDOC
+(
+  ID         NUMBER                             NOT NULL,
+  FK_KW      NUMBER,
+  LSK        VARCHAR2(8 CHAR),
+  FK_PERS    NUMBER,
+  FK_DOC     NUMBER,
+  DT1        DATE,
+  DT2        DATE,
+  FK_FORM_S  NUMBER,
+  OWNER      NUMBER(1)                          DEFAULT 0,
+  DOLCH      NUMBER,
+  DOLZN      NUMBER,
+  ARH        NUMBER(1),
+  NPP        NUMBER                             DEFAULT 0                     NOT NULL,
+  V          NUMBER                             DEFAULT 1                     NOT NULL,
+  COMM       VARCHAR2(128 BYTE)
+)
+TABLESPACE DATA
+RESULT_CACHE (MODE DEFAULT)
+PCTUSED    0
+PCTFREE    10
+INITRANS   1
+MAXTRANS   255
+STORAGE    (
+            INITIAL          1M
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+LOGGING 
+NOCOMPRESS 
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.ID IS 'Паспортный стол. История документов у персоны ';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.FK_KW IS 'ФК на квартиру';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.FK_PERS IS 'ФК на персону';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.FK_DOC IS 'ФК на документ';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.DT1 IS 'Дата начала собственности';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.DT2 IS 'Дата окончания собственности';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.FK_FORM_S IS 'ФК на форму собственности';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.DOLCH IS 'доля числ';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.DOLZN IS 'доля знам';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.ARH IS 'Собственник в архиве. становится после даты окончания собственности';
+COMMENT ON COLUMN VAFLIA.S_PERSXDOC.OWNER IS 'Признак основного квартиросъемщика (на кого печатать квитанции)';
+
+
+CREATE UNIQUE INDEX VAFLIA.S_OWNER_PK ON VAFLIA.S_PERSXDOC
+(ID)
+LOGGING
+TABLESPACE DATA
+PCTFREE    10
+INITRANS   2
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+
+CREATE OR REPLACE TRIGGER VAFLIA.S_OWNER_BI
+  before insert on vaflia.S_PERSXDOC
+  for each row
+declare
+begin
+  if :new.id is null or :new.id=0 then
+    select oralv.seq_base.nextval into :new.id from dual;
+  end if;
+end s_owner_bi;
+/
+
+
+ALTER TABLE VAFLIA.S_PERSXDOC ADD (
+  CONSTRAINT S_OWNER_PK
+  PRIMARY KEY
+  (ID)
+  USING INDEX VAFLIA.S_OWNER_PK
+  ENABLE VALIDATE);
+
+ALTER TABLE VAFLIA.S_PERSXDOC ADD (
+  CONSTRAINT S_OWNER_FK_DOC 
+  FOREIGN KEY (FK_DOC) 
+  REFERENCES VAFLIA.S_DOC (ID)
+  ENABLE VALIDATE,
+  CONSTRAINT S_OWNER_FK_FORM_S 
+  FOREIGN KEY (FK_FORM_S) 
+  REFERENCES ORALV.U_LIST (ID)
+  ENABLE VALIDATE,
+  CONSTRAINT S_OWNER_FK_KW 
+  FOREIGN KEY (FK_KW) 
+  REFERENCES ORALV.C_KW (ID)
+  ENABLE VALIDATE,
+  CONSTRAINT S_OWNER_FK_LSK 
+  FOREIGN KEY (LSK) 
+  REFERENCES ORALV.KART (LSK)
+  ENABLE VALIDATE,
+  CONSTRAINT S_OWNER_FK_PERS 
+  FOREIGN KEY (FK_PERS) 
+  REFERENCES VAFLIA.S_PERS (ID)
+  ON DELETE CASCADE
+  ENABLE VALIDATE);
+
+GRANT SELECT ON VAFLIA.S_PERSXDOC TO HSKEEP_SELECT;

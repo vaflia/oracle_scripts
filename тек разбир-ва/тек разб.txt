@@ -1,0 +1,106 @@
+select * from scott.load_kartw where fio like '%Князев Михаил%'
+
+select * from prep.log_parser order by id desc
+
+
+
+SELECT o.name AS o_name_    , o.id , o.cd, o.fk_orgtp, o.name, o.parent_id, o.npp, o.v, o.all_, o.mp
+     , o.trest, o.reu, o.uch, ot.cd ot_cd, ot.cd_u_hfparl, ot.name ot_name, o.fk_k_lsk 
+     , (SELECT o2.reu FROM oralv.t_org o2 WHERE o2.id=o.parent_id) AS o2_reu
+  FROM oralv.t_org o, oralv.t_org_tp ot  
+ WHERE ot.id = o.fk_orgtp  
+CONNECT BY o.parent_id = PRIOR o.id START WITH o.id= /*:FK_ORG_TREST*/57852 
+--SQL.text - aoaao nicaai TfHFspr.FormCreate ->TfHFspr.modSQL
+
+select a.*,SYS_CONNECT_BY_PATH ( name, '/' ) way  from ORALV.S_AREA A
+CONNECT BY a.parent_id = PRIOR a.id START WITH a.id=1 
+
+
+
+SELECT * from oralv.u_list ul inner join oralv.u_listtp ultp
+on ul.fk_listtp=ultp.id
+and ultp.cd='S.AREA_TP'
+
+
+WITH s ( id,parent_id) AS (
+     SELECT id, parent_id
+     FROM   ORALV.S_AREA
+      WHERE  id = 1
+         UNION ALL
+    SELECT id, parent_id
+     FROM   s
+     WHERE  id <> 1
+  )
+--  CYCLE id SET cyclemark TO 'X' DEFAULT '-'
+SELECT id, parent_id--, cyclemark 
+FROM ORALV.S_AREA  s
+
+WITH
+numbers ( n ) AS (
+   SELECT 1 AS n FROM dual -- исходное множество -- одна строка
+   UNION ALL                      -- символическое «объединение» строк
+   SELECT n + 1 AS n              -- рекурсия: добавок к предыдущему результату
+   FROM   numbers                 -- предыдущий результат в качестве источника данных
+   WHERE  n < 5                   -- если не ограничить, будет бесконечная рекурсия
+)
+SELECT n FROM numbers 
+
+
+
+insert into oralv.s_area
+select * from (select  * from oralv.s_area AS OF TIMESTAMP
+TO_TIMESTAMP('15.05.2013 08:01:45','DD-MM-YY HH24: MI: SS') ) s
+where not exists (
+select * from oralv.s_area sa where sa.id=s.id)
+select * from oralv.u_list_np_tp
+
+   
+
+SELECT ul.id,ul.name
+FROM oralv.u_list ul inner join oralv.u_listtp ultp
+on ul.fk_listtp=ultp.id
+and ultp.cd='S.AREA_NP_TP'
+
+select b.parent_id, a.name from oralv.S_AREA A, 
+(select distinct parent_id from oralv.s_area where parent_id is not null order by parent_id) b
+where a.id=b.parent_id
+select a.parent_id,a.name, a.rowid from ORALV.S_AREA A
+order by a.name
+
+declare 
+begin
+drop table vaflia.s_area;
+drop table vaflia.u_list;
+drop table vaflia.u_listtp;
+create table vaflia.s_area as select * from oralv.s_area;
+create table vaflia.u_list as select * from oralv.u_list;
+create table vaflia.u_listtp as select * from oralv.u_listtp;
+
+
+
+insert into  oralv.s_area
+(cd,name,fk_area_tp,fk_area_nptp,dt1,dt2,parent_id,npp,v)
+select cd,name,fk_area_tp,fk_area_nptp,dt1,dt2,parent_id,npp,v
+from oralv.s_area where cd<>'000'
+
+ delete from oralv.s_area where cd='000'
+delete from oralv.s_area where id>24
+
+
+select * from prep.log_parser order by id desc
+
+
+
+CREATE OR REPLACE TRIGGER oralv.s_area_bi
+  before insert on oralv.s_area
+  for each row
+declare
+begin
+  if :new.id is null or :new.id=0 then
+    select oralv.seq_s_area.nextval into :new.id from dual;
+  end if;
+end s_area_bi;
+
+
+select oralv.seq_s_area.nextval  from dual;
+
