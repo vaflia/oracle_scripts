@@ -1,35 +1,35 @@
 --начисление
  drop table prep.nabor201402
-   create table prep.nabor201402 as select * from scott.nabor
- drop table prep.load_kwni201402
-   create table prep.load_kwni201402 as select * from scott.load_kwni
- drop table prep.load_kartw201402
-   create table prep.load_kartw201402 as select * from scott.load_kartw
+   create table prep.nabor201403 as select * from scott.nabor
+ drop table prep.load_kwni201403
+   create table prep.load_kwni201403 as select * from scott.load_kwni
+ drop table prep.load_kartw201403
+   create table prep.load_kartw201403 as select * from scott.load_kartw
 --справочники
- drop table prep.sptar201402
-   create table prep.sptar201402 as select * from scott.sptar
- drop table prep.sprorg201402
-   create table prep.sprorg201402 as select * from scott.sprorg
- drop table prep.s_stra201402
-   create table prep.s_stra201402 as select * from scott.s_stra
+ drop table prep.sptar201403
+   create table prep.sptar201403 as select * from scott.sptar
+ drop table prep.sprorg201403
+   create table prep.sprorg201403 as select * from scott.sprorg
+ drop table prep.s_stra201403
+   create table prep.s_stra201403 as select * from scott.s_stra
 --сальдовые  
- drop table prep.t_charges_usl201402
-   create table prep.t_charges_usl201402 as select * from scott.t_charges_usl
- drop table prep.t_changes_usl201402
-   create table prep.t_changes_usl201402 as select * from scott.t_changes_usl
- drop table prep.t_payment_usl201402
-   create table prep.t_payment_usl201402 as select * from scott.t_payment_usl
- drop table prep.t_privs_usl201402      
-   create table prep.t_privs_usl201402 as select * from scott.t_privs_usl
- drop table prep.load_koop201402      
-   create table prep.load_koop201402 as select * from scott.load_koop
- drop table prep.koop201402      
-   create table prep.koop201402 as select * from scott.koop   
- drop table prep.kart201402      
-   create table prep.kart201402 as select * from scott.kart  
+ drop table prep.t_charges_usl201403
+   create table prep.t_charges_usl201403 as select * from scott.t_charges_usl
+ drop table prep.t_changes_usl201403
+   create table prep.t_changes_usl201403 as select * from scott.t_changes_usl
+ drop table prep.t_payment_usl201403
+   create table prep.t_payment_usl201403 as select * from scott.t_payment_usl
+ drop table prep.t_privs_usl201403      
+   create table prep.t_privs_usl201403 as select * from scott.t_privs_usl
+ drop table prep.load_koop201403      
+   create table prep.load_koop201403 as select * from scott.load_koop
+ drop table prep.koop201403      
+   create table prep.koop201403 as select * from scott.koop   
+ drop table prep.kart201403      
+   create table prep.kart201403 as select * from scott.kart  
 --общедомовые счетчики   
- drop table prep.load_gw201402      
-   create table prep.load_gw201402 as select * from ldo.load_gw   
+ drop table prep.load_gw201403      
+   create table prep.load_gw201403 as select * from ldo.load_gw   
 
    
 

@@ -33,7 +33,7 @@ FROM
             sum(ska)+sum(pn) as summ_all
                 
         FROM  ldo.l_kwtp lk, scott.s_stra s, scott.oper op 
-    WHERE  lk.dtek  between '01.02.2014' and '28.02.2014'
+    WHERE  lk.dtek  between '01.03.2014' and '31.03.2014'
        --AND  lk.lsk not in ('00009999')
        AND  op.oper=lk.oper 
        AND  SUBSTR(op.oigu,1,1)='1'
@@ -48,14 +48,14 @@ FROM
         (
      SELECT b.dtek, sum(b.ska) b_ska, sum(pn) b_pn, sum(ska) + sum(pn) b_summa
              FROM prep.kwtp_b  b --, scott.oper op
-     WHERE  b.dtek  between '01.02.2014' and '28.02.2014'
+     WHERE  b.dtek  between '01.03.2014' and '31.03.2014'
      GROUP BY b.dtek
      ORDER BY b.dtek
          ) B, 
    (
      SELECT dtek, sum(ska) olap_ska, sum(pn) olap_pn, sum(ska) + sum(pn) olap_summa
          FROM prep.kwtp_olap  
-     WHERE  dtek  between '01.02.2014' and '28.02.2014'
+     WHERE  dtek  between '01.03.2014' and '31.03.2014'
              and pay = 0
      GROUP BY dtek
      ORDER BY dtek
@@ -75,7 +75,7 @@ FROM
                  --sum(ska)
                --+ sum(pn    ) as bank_summa
         FROM  ldo.l_kwtp lk, scott.s_stra s, scott.oper op 
-    WHERE  lk.dtek  between '01.02.2014' and '28.02.2014'
+    WHERE  lk.dtek  between '01.03.2014' and '31.03.2014'
        AND  lk.lsk not in ('00009999')
        AND  op.oper=lk.oper and op.tp_cd not in ('ND')
        AND  substr(lk.lsk,1,4) = s.nreu
@@ -89,15 +89,15 @@ FROM
         (
      SELECT dtek,sum(ska)+ sum(pn) olap_bank_l_pay
          FROM prep.kwtp_olap  
-     WHERE  dtek  between '01.02.2014' and '28.02.2014'
+     WHERE  dtek  between '01.03.2014' and '31.03.2014'
              and pay = 1
      GROUP BY dtek
      ORDER BY dtek
      ) OLAP_BANK ,
     (
-    select  trunc(to_date('01.02.2014'),'mm') + level-1 dt
+    select  trunc(to_date('01.03.2014'),'mm') + level-1 dt
        from  dual
-     connect by  trunc(to_date('01.02.2014'),'mm') + level-1  <= to_date('28.02.2014')
+     connect by  trunc(to_date('01.03.2014'),'mm') + level-1  <= to_date('31.03.2014')
     ) dt
 WHERE
      lk.dtek      (+) = dt.dt and 
@@ -123,7 +123,7 @@ ORDER BY dt.dt
      ORDER BY b.dtek
      select t.rowid, t.* from prep.d_load t
      select * from prep.log_parser order by id desc*/
-     
+     prep.d_load
       delete from ldo.l_kwtp_crc
           select * from ldo.l_kwtp where ska=3142
           select * from scott.l_pay where lsk='24036509'
